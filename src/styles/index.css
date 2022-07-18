@@ -182,3 +182,8 @@ button {
     border-bottom: 2px solid #00675b;
   }
 }
+
+.category-sorting {
+  display: flex;
+  margin-bottom: 2.5rem;
+}

@@ -6,6 +6,7 @@ import { useState } from 'react'
 import { StoreItemList } from './components/StoreItemList'
 import { CartItemList } from './components/CartItemList'
 import { CategoryCheckboxes } from './components/CategoryCheckboxes'
+import { SortBy } from './components/SortBy'
 
 /*
 Here's what a store item should look like
@@ -18,13 +19,57 @@ Here's what a store item should look like
 What should a cart item look like? 🤔
 */
 
-console.log(initialStoreItems)
-
 export default function App() {
   // Setup state here...
   const storeItems = initialStoreItems
   const [cartItems, setCartItems] = useState([])
+  const [filters, setFilters] = useState(['fruit', 'vegetable'])
+  const [sortBy, setSortBy] = useState('')
 
+  //Filters
+  const addFilter = filter => {
+    if (filters.includes(filter)) {
+      setFilters([filter])
+    } else {
+      setFilters([...filters, filter])
+    }
+  }
+
+  const removeFilter = filter => {
+    const newFilters = filters.filter(currentFilter => currentFilter !== filter)
+    setFilters(newFilters)
+  }
+
+  let filteredShopItems = [...storeItems]
+  if (filters.length === 0) {
+    setFilters(['fruit', 'vegetable'])
+  }
+
+  filteredShopItems = filteredShopItems.filter(item =>
+    filters.includes(item.category)
+  )
+
+  //Sort by
+  const selectSortBy = option => {
+    setSortBy(option)
+  }
+
+  if (sortBy === 'price') {
+    filteredShopItems.sort((a, b) => a.price - b.price)
+  }
+
+  if (sortBy === 'name') {
+    filteredShopItems.sort((a, b) => {
+      if (a.name < b.name) {
+        return -1
+      } else if (a.name > b.name) {
+        return 1
+      }
+      return 0
+    })
+  }
+
+  //Add shop items to cart
   const addToCart = item => {
     const findInCart = cartItems.find(cartItem => cartItem.id === item.id)
 
@@ -43,6 +88,7 @@ export default function App() {
     }
   }
 
+  //Cart items
   const changeQuantity = (item, change) => {
     let changedCart
 
@@ -79,9 +125,15 @@ export default function App() {
       <header id="store">
         <h1>Greengrocers</h1>
 
-        <CategoryCheckboxes />
+        <div className="category-sorting">
+          <CategoryCheckboxes
+            addFilter={addFilter}
+            removeFilter={removeFilter}
+          />
+          <SortBy selectSortBy={selectSortBy} />
+        </div>
 
-        <StoreItemList items={storeItems} addToCart={addToCart} />
+        <StoreItemList items={filteredShopItems} addToCart={addToCart} />
       </header>
       <main id="cart">
         <h2>Your Cart</h2>
