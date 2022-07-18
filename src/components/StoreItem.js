@@ -10,14 +10,16 @@ export const StoreItem = props => {
   }
 
   return (
-    <li onClick={toggleDisplay}>
-      {showDetail ? (
-        <ItemDetail item={item} />
-      ) : (
-        <div class="store--item-icon">
-          <img src={`./assets/icons/${item.id}.svg`} alt={item.name} />
-        </div>
-      )}
+    <li>
+      <div onClick={toggleDisplay}>
+        {showDetail ? (
+          <ItemDetail item={item} />
+        ) : (
+          <div class="store--item-icon">
+            <img src={`./assets/icons/${item.id}.svg`} alt={item.name} />
+          </div>
+        )}
+      </div>
       <button onClick={() => addToCart(item)}>Add to cart</button>
     </li>
   )
